@@ -1,3 +1,4 @@
+{-# LANGUAGE DataKinds #-}
 {-# LANGUAGE FlexibleContexts #-}
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE TemplateHaskell #-}
@@ -37,6 +38,7 @@ import Network.Web3.Dapp.EthABI
 import Network.Web3.Dapp.EthABI.Bzz
 import Network.Web3.Dapp.EthABI.TH
 import Network.Web3.Dapp.EthABI.Types
+import Network.Web3.Dapp.FixArray
 import qualified Network.Web3.Dapp.Solc as Solc
 import Network.Web3.Dapp.Swarm (SwarmSettings(..),defaultSwarmSettings)
 import Network.Web3.Extra
@@ -225,7 +227,7 @@ test1 = do
       logDebugN $ "dat3: " <> dat3
       logDebugN $ T.pack $ "func3: " ++ show (types_func3_out dat3)
       let func4 = conFunc "func4" coinC
-      dat4 <- web3_call addr1 conAddr $ types_func4_in (3, [True,False,True], -2, "locuelo", addr3, "www", True, ["uno", "dos", "tes", "cu4", "ci5"])
+      dat4 <- web3_call addr1 conAddr $ types_func4_in (3, NilL|>True|>False|>True, -2, "locuelo", addr3, "www", True, ["uno", "dos", "tes", "cu4", "ci5"])
       logDebugN $ T.pack $ "func4: " ++ show (decodeAbi' func4 dat4)
       logDebugN $ T.pack $ "func4: " ++ show (types_func4_out dat4)
       let func5 = conFunc "func5" coinC
@@ -281,11 +283,11 @@ test1 = do
       logDebugN $ T.pack $ "func3: " ++ show (decodeAbi func3 dat3 :: Either Text (Bool,Text,HexEthAddr))
 -- func4: (uint64 a, bool[3] b, int40 c, string d, address e, bytes f, bool g, bytes3[] h)
       let func4 = conFunc "func4" coinC
-      dat4 <- web3_call addr1 conAddr $ mkData func4 (3::Int, [True,False,True], -2::Int, "locuelo"::Text, addr3, "www"::BS.ByteString, True, ["uno"::BS.ByteString, "dos", "tes", "cu4", "ci5"])
+      dat4 <- web3_call addr1 conAddr $ mkData func4 (3::Int, [True,False,True], -2::Int, "locuelo"::Text, addr3, "www"::BS.ByteString, True, map bytes3 ["uno", "dos", "tes", "cu4", "ci5"])
 --          logDebugN $ "dat4: " <> dat4
 --          mapM_ (logDebugN . toHex) (takesBs 32 $ fromHex dat4)
       logDebugN $ T.pack $ "func4: " ++ show (decodeAbi' func4 dat4)
-      logDebugN $ T.pack $ "func4: " ++ show (decodeAbi func4 dat4 :: Either Text (Int, [Bool], Int, Text, HexEthAddr, BS.ByteString, Bool, [BS.ByteString]))
+      logDebugN $ T.pack $ "func4: " ++ show (decodeAbi func4 dat4 :: Either Text (Int, FixArray 3 Bool, Int, Text, HexEthAddr, BS.ByteString, Bool, [BS.ByteString]))
       let func5 = conFunc "func5" coinC
       dat5 <- web3_call addr1 conAddr $ mkData func5 (-1::Int, -1::Int)
 --          logDebugN $ "dat5: " <> dat5
