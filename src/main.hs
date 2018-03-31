@@ -33,7 +33,7 @@ import Network.Web3.Types
 import System.Environment (getArgs,getProgName)
 
 foldBlockchain :: (JsonRpcConn c, MonadLoggerIO m, MonadBaseControl IO m)
-               => (Int64 -> Web3T c m ())
+               => (BlockNum -> Web3T c m ())
                -> Web3T c m ()
 foldBlockchain = foldFrom 0
   where
