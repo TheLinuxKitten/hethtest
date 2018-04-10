@@ -33,6 +33,7 @@ executable hethdapp
                      , aeson
                      , aeson-pretty
                      , bytestring
+                     , directory
                      , hethdapp
                      , hjsonrpc
                      , hethrpc

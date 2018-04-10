@@ -14,12 +14,13 @@
 
 module EthDapps.Test1 where
 
+import Language.Haskell.TH
 import Network.Web3.Dapp.EthABI.TH
 import Network.Web3.Dapp.EthABI.Types
+import System.Directory (getCurrentDirectory)
 
-$(compile (SolcSettings [] [])
-    [ "/home/kitten/privnet/sol/coin.sol"
-    , "/home/kitten/privnet/sol/types.sol"
+$(runIO getCurrentDirectory >>= \wd -> compile (SolcSettings [] [])
+    [ wd ++ "/demo/EthDapps/coin.sol"
+    , wd ++ "/demo/EthDapps/types.sol"
     ])
-
 
